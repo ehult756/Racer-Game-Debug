@@ -1,4 +1,4 @@
-<!-- Timer doesn't work... -->
+
 <!DOCTYPE html>
 <html>
     <head><title>RACER GAME</title></head>
@@ -120,24 +120,40 @@
                     this.isRunning = false
                     this.restarts = false;
                     resetTimer();},
+                renderScene: function(rad) {
+                    //clears screen to draw new track
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+                    //translated locs: converts locs's positions into its display
+                    let tlocs = this.locs.map(pos => this.locate_point(pos[0] * SCALE, pos[1] * SCALE, this.mapx, this.mapy, rad));
+                    let tlocs_start = this.locs_start.map(pos => this.locate_point(pos[0] * SCALE, pos[1] * SCALE, this.mapx, this.mapy, rad));
+                    let tlocs_finish = this.locs_finish.map(pos => this.locate_point(pos[0] * SCALE, pos[1] * SCALE, this.mapx, this.mapy, rad));
+                    
+                    //renders track
+                    this.draw_track(tlocs, "grey");
+                    tlocs.forEach(p => this.draw_point(p, "white"));
+                    this.draw_track(tlocs_start, "lime");
+                    this.draw_track(tlocs_finish, "red");
+
+                    //renders car
+                    this.draw_point(this.rotation_point, "red");
+
+                     return { tlocs, tlocs_finish };
+                },
+
 
                 draw: function(speeding_up, slowing_down, turning_right, turning_left) {
-                    if (this.menu || this.restarts) {
-                        if (this.restarts){
-                            //renders track
-                            this.draw_track(this.locs, "grey");
-                            this.locs.forEach(p => this.draw_point(p, "white"));
-                            this.draw_track(this.locs_start, "lime");
-                            this.draw_track(this.locs_finish, "red");
-
-                            //renders car
-                            this.draw_point(this.rotation_point, "red");
-
-                            this.restart();
-                        }
-                        if (this.menu){
-                            // menu placeholder
-                        }
+                    if (this.restarts){
+                        this.restart();
+                        this.restarts = false;
+                    }
+                     if (this.menu){
+                        const pausedRad = radians(this.direction);
+                        this.renderScene(pausedRad);
+                        ctx.fillStyle = "white";
+                        ctx.font = "20px Arial";
+                        ctx.fillText("PAUSED", 20, 40);
                         return;
                     }
 
@@ -172,23 +188,7 @@
                     this.mapx += this.speed * Math.cos(rad);
                     this.mapy += this.speed * Math.sin(rad);
 
-                    //clears screen to draw new track
-                    ctx.fillStyle = "black";
-                    ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-                    //translated locs: converts locs's positions into its display
-                    let tlocs = this.locs.map(pos => this.locate_point(pos[0] * SCALE, pos[1] * SCALE, this.mapx, this.mapy, rad));
-                    let tlocs_start = this.locs_start.map(pos => this.locate_point(pos[0] * SCALE, pos[1] * SCALE, this.mapx, this.mapy, rad));
-                    let tlocs_finish = this.locs_finish.map(pos => this.locate_point(pos[0] * SCALE, pos[1] * SCALE, this.mapx, this.mapy, rad));
-                    
-                    //renders track
-                    this.draw_track(tlocs, "grey");
-                    tlocs.forEach(p => this.draw_point(p, "white"));
-                    this.draw_track(tlocs_start, "lime");
-                    this.draw_track(tlocs_finish, "red");
-
-                    //renders car
-                    this.draw_point(this.rotation_point, "red");
+                    const { tlocs, tlocs_finish } = this.renderScene(rad);
                     
                     // Checks movement
                     if (!this.bounds(tlocs, this.rotation_point[0], this.rotation_point[1])) {
