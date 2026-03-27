@@ -1,7 +1,4 @@
-"""
-Timer doesn't work...
-"""
-
+<!-- Timer doesn't work... -->
 <!DOCTYPE html>
 <html>
     <head><title>RACER GAME</title></head>
@@ -19,8 +16,15 @@ Timer doesn't work...
             function radians(x) {return x / 180 * Math.PI;}
             function degrees(x) {return x * 180 / Math.PI;}
 
-            function startTimer() {
-                startTime = Date.now();
+            // TIMER
+            let startTimer = null;
+            let elapsedTime = 0;
+            if (startTime === null) {
+                    startTime = Date.now() - elapsedTime;
+            }
+            function resetTimer() {
+                startTime = null;
+                elapsedTime = 0;
             }
 
             // TRACK VARIABLE ----------------------------------------------------------------
@@ -113,14 +117,16 @@ Timer doesn't work...
                     this.mapy = this.start_square[1];
                     this.direction = this.starting_direction;
                     this.speed = 0;
-                    this.isRunning = false},
+                    this.isRunning = false
+                    this.restarts = false;
+                    resetTimer();},
 
                 draw: function(speeding_up, slowing_down, turning_right, turning_left) {
                     if (this.menu || this.restarts) {
                         if (this.restarts){
                             //renders track
                             this.draw_track(this.locs, "grey");
-                            locs.forEach(p => this.draw_point(p, "white"));
+                            this.locs.forEach(p => this.draw_point(p, "white"));
                             this.draw_track(this.locs_start, "lime");
                             this.draw_track(this.locs_finish, "red");
 
@@ -130,14 +136,18 @@ Timer doesn't work...
                             this.restart();
                         }
                         if (this.menu){
-                            pass;
+                            // menu placeholder
                         }
                         return;
                     }
 
                     //Checks if this is the first input of the run, if so, starts timer
-                    if (isRunning == false && (speeding_up || slowing_down)) this.isRunning = true, super.startTimer();
-                    else if (isRunning == false && (turning_right || turning_left)) return;
+                    if (!this.isRunning && (speeding_up || slowing_down)) {
+                        this.isRunning = true;
+                        startTimer();
+                    } else if (!this.isRunning && (turning_right || turning_left)) {
+                        return;
+                    }
 
                     // Movement Logic
                     this.acc = 1 - (Math.abs(this.speed)/this.maxspeed);
@@ -207,13 +217,13 @@ Timer doesn't work...
             //gets keyboard input
             let speeding_up = false, slowing_down = false, turning_left = false, turning_right = false;
             window.addEventListener('keydown', (e) => {
-                if (e.key === 'w' || e.key === 'ArrowUp') speeding_up = true, startTimer();
-                if (e.key === 's' || e.key === 'ArrowDown') slowing_down = true, startTimer();
+                if (e.key === 'w' || e.key === 'ArrowUp') speeding_up = true;
+                if (e.key === 's' || e.key === 'ArrowDown') slowing_down = true;
                 if (e.key === 'a' || e.key === 'ArrowLeft') turning_left = true;
                 if (e.key === 'd' || e.key === 'ArrowRight') turning_right = true;
                 //
-                if (e.key === 'Space' || e.key === 'Escape') track.menu = true;
-                if (e.key === 'r' || e.key === '0') this.restarts = true;
+                 if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') track.menu = !track.menu;
+                if (e.key === 'r' || e.key === '0') track.restarts = true;
             });
             window.addEventListener('keyup', (e) => {
                 if (e.key === 'w' || e.key === 'ArrowUp') speeding_up = false;
@@ -224,9 +234,12 @@ Timer doesn't work...
 
             function update() {
                 //Timer
-                let elapsed = Date.now() - startTime;
-                let displaySeconds = (elapsed / 1000).toFixed(2);
-                document.getElementById('timer').innerText = displaySeconds;
+                if (startTime !== null) elapsedTime = Date.now() - startTime;
+                const totalCentiseconds = Math.floor(elapsedTime / 10);
+                const minutes = String(Math.floor(totalCentiseconds / 6000)).padStart(2, '0');
+                const seconds = String(Math.floor((totalCentiseconds % 6000) / 100)).padStart(2, '0');
+                const centiseconds = String(totalCentiseconds % 100).padStart(2, '0');
+                document.getElementById('timer').innerText = `${minutes}:${seconds}:${centiseconds}`;
                 //Track
                 track.draw(speeding_up, slowing_down, turning_right, turning_left);
                 //Renders
