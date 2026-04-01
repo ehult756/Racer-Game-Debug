@@ -1,4 +1,5 @@
-
+<!-- Timer doesn't work... -->
+ <!-- For Debuggin: CHECK VARIABLE DECLARATION-->
 <!DOCTYPE html>
 <html>
     <head><title>RACER GAME</title></head>
@@ -17,10 +18,12 @@
             function degrees(x) {return x * 180 / Math.PI;}
 
             // TIMER
-            let startTimer = null;
+            let startTime = null;
             let elapsedTime = 0;
-            if (startTime === null) {
-                    startTime = Date.now() - elapsedTime;
+            function startTimer() {
+                if (startTime === null) {
+                        startTime = Date.now() - elapsedTime;
+                }
             }
             function resetTimer() {
                 startTime = null;
@@ -34,7 +37,7 @@
                 acc: 0,
                 direction: 270,
                 //movement constants
-                rotation_point: [(WIDTH/2), (HEIGHT/4*3)],
+                rotation_point: [(WIDTH/2), (HEIGHT/2)],
                 turn_radius: 3,
                 friction: 0.1,
                 maxspeed: SCALE*2,
@@ -60,7 +63,7 @@
                     //map
                     this.locs = [[0,0],[0,7],[2,9],[4,9],[6,7],[8,9],[10,9],[12,7],[12,0],[10,0],[10,6],[9,7],[6,4],[3,7],[2,6],[2,0]];
                     //start
-                    this.start_square = [1*SCALE,0.5*SCALE];
+                    this.start_square = [6*SCALE,4.5*SCALE];
                     this.mapx = this.start_square[0];
                     this.mapy = this.start_square[1];
                     this.starting_direction = 270;
@@ -120,6 +123,7 @@
                     this.isRunning = false
                     this.restarts = false;
                     resetTimer();},
+
                 renderScene: function(rad) {
                     //clears screen to draw new track
                     ctx.fillStyle = "black";
@@ -144,6 +148,7 @@
 
 
                 draw: function(speeding_up, slowing_down, turning_right, turning_left) {
+                    /*
                     if (this.restarts){
                         this.restart();
                         this.restarts = false;
@@ -156,7 +161,7 @@
                         ctx.fillText("PAUSED", 20, 40);
                         return;
                     }
-
+                    */
                     //Checks if this is the first input of the run, if so, starts timer
                     if (!this.isRunning && (speeding_up || slowing_down)) {
                         this.isRunning = true;
@@ -164,6 +169,7 @@
                     } else if (!this.isRunning && (turning_right || turning_left)) {
                         return;
                     }
+                    
 
                     // Movement Logic
                     this.acc = 1 - (Math.abs(this.speed)/this.maxspeed);
@@ -222,7 +228,7 @@
                 if (e.key === 'a' || e.key === 'ArrowLeft') turning_left = true;
                 if (e.key === 'd' || e.key === 'ArrowRight') turning_right = true;
                 //
-                 if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') track.menu = !track.menu;
+                 if (e.key === ' ' || e.key === 'Space' || e.key === 'Escape') track.menu = !track.menu;
                 if (e.key === 'r' || e.key === '0') track.restarts = true;
             });
             window.addEventListener('keyup', (e) => {
