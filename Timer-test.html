@@ -63,7 +63,7 @@
                     //map
                     this.locs = [[0,0],[0,7],[2,9],[4,9],[6,7],[8,9],[10,9],[12,7],[12,0],[10,0],[10,6],[9,7],[6,4],[3,7],[2,6],[2,0]];
                     //start
-                    this.start_square = [6*SCALE,4.5*SCALE];
+                    this.start_square = [1*SCALE,0.5*SCALE];
                     this.mapx = this.start_square[0];
                     this.mapy = this.start_square[1];
                     this.starting_direction = 270;
@@ -148,11 +148,12 @@
 
 
                 draw: function(speeding_up, slowing_down, turning_right, turning_left) {
-                    /*
+                    
                     if (this.restarts){
                         this.restart();
                         this.restarts = false;
                     }
+                    /*
                      if (this.menu){
                         const pausedRad = radians(this.direction);
                         this.renderScene(pausedRad);
@@ -228,7 +229,7 @@
                 if (e.key === 'a' || e.key === 'ArrowLeft') turning_left = true;
                 if (e.key === 'd' || e.key === 'ArrowRight') turning_right = true;
                 //
-                 if (e.key === ' ' || e.key === 'Space' || e.key === 'Escape') track.menu = !track.menu;
+                if (e.key === ' ' || e.key === 'Space' || e.key === 'Escape') track.menu = !track.menu;
                 if (e.key === 'r' || e.key === '0') track.restarts = true;
             });
             window.addEventListener('keyup', (e) => {
@@ -240,6 +241,7 @@
 
             function update() {
                 //Timer
+                // ngl ai wrote all the code for the timer. Ima pretend i understand how it works
                 if (startTime !== null) elapsedTime = Date.now() - startTime;
                 const totalCentiseconds = Math.floor(elapsedTime / 10);
                 const minutes = String(Math.floor(totalCentiseconds / 6000)).padStart(2, '0');
