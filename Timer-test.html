@@ -1,4 +1,4 @@
-<!-- Timer doesn't work... -->
+<!-- wORK ON RESTART && MENU -->
  <!-- For Debuggin: CHECK VARIABLE DECLARATION-->
 <!DOCTYPE html>
 <html>
@@ -30,6 +30,12 @@
                 elapsedTime = 0;
             }
 
+            //Car image
+            const img = new Image();
+            img.src = 'vroom vroom.jpg';
+
+            
+
             // TRACK VARIABLE ----------------------------------------------------------------
             const track = {
                 //movement:
@@ -58,6 +64,7 @@
                 start_square: [0,0],
                 starting_direction: 270,
                 mapx: WIDTH/2, mapy: HEIGHT/2,
+                car_width: img.width * SCALE * 0.002, car_height: img.height * SCALE * 0.002,
                 //game board storage: might import later
                 game_map_a: function(){
                     //map
@@ -211,6 +218,12 @@
                         ctx.fillText("FINISH", 20, 40);
                         this.speed *= 0.8; 
                     }
+                    // adds car image at 270 degrees, centered on rotation point
+                    ctx.save();
+                    ctx.translate(this.rotation_point[0], this.rotation_point[1]);
+                    ctx.rotate(270 * Math.PI / 180);
+                    ctx.drawImage(img, -this.car_width / 2, -this.car_height / 2, this.car_width, this.car_height); // image, x, y, width, height
+                    ctx.restore();
                     
 
                 //end of draw()
