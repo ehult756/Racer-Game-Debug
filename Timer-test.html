@@ -8,8 +8,11 @@
             body { margin: 0; padding: 0; overflow: hidden; } /* Prevents scrollbars */
             canvas { display: block; width: 100vw; height: 100vh; }
         </style>
-        <canvas id="canvas" ></canvas>
-        <div id="timer" style="position: relative; top: 200px; left: 100px;">00:00:00</div>
+        <canvas id="canvas" style="z-index: 10;"></canvas>
+        <div id="timer" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+            00:00:00
+        </div>
+        <!-- z-index makes sure the timer is on top -->
         <script>
             //CANVAS DISPLAY ----------------------------------------------
             const canvas = document.getElementById("canvas");
